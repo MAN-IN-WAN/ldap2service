@@ -1,0 +1,8 @@
+UBUNTU / LINUX MINT
+# apt-get install libldap2-dev libconfig-dev
+
+REDHAT / CENTOS
+# yum install openldap-devel libconfig-devel
+Ne pas oublier de créer les liens symboliques vers chaque version pre-installée.
+ex: ln -s /usr/local/php-default /usr/local/php-5.3.3 
+
