@@ -455,11 +455,13 @@ int classApache() {
 		 int fclen;
 		 tmp  = unbase64(fileDataFullChain,(int)strlen(fileDataFullChain),&fclen);
 		 char *tmp2 = (char *) malloc(fclen+1);
-		 tmp2  = tmp;
+		 strncpy(tmp2,tmp,fclen);
+		 free(tmp);
 		 tmp2[fclen]='\0';
 		 //printf("creation fullchain ssl %s \n",tmp2);
                  fputs(tmp2, f);
                  fclose(f);
+		 free(tmp2);
          }
 	 
 	 //creation du fichier privkey
@@ -468,11 +470,13 @@ int classApache() {
 		 int pklen;
 		 tmps = unbase64(fileDataPrivkey,(int)strlen(fileDataPrivkey),&pklen);
 		 char * tmps2 = (char *) malloc(pklen+1);
-		 tmps2 = tmps;
+		 strncpy(tmps2,tmps,pklen);
+		 free(tmps);
 		 tmps2[pklen]='\0';
 		 //printf("creation privkey ssl %s \n",tmps2);
                  fputs(tmps2, f);
                  fclose(f);
+		 free(tmps2);
          }
   }else{
 	printf("suppression config ssl %s\n",fileNameSsl);
@@ -548,8 +552,8 @@ int classAccount() {
           fileData = replaceAll(fileTemp, acReplacements[i].target, acReplacements[i].defaultValue);
           fileNemp = fileName;
           fileName = replaceAll(fileNemp, acReplacements[i].target, acReplacements[i].defaultValue);
-          free(fileTemp);
-          free(fileNemp);
+	  //free(fileTemp);
+	  //free(fileNemp);
   }
   //Sortie log et ecriture du fichier
   if(*fileName) {

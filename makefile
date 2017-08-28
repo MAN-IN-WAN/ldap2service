@@ -2,11 +2,15 @@
 BIN_DIR=/usr/bin
 CONFIG_DIR=/etc/ldap2service
 OPENLDAP_DIR=/etc/openldap/schema
+CCFLAGS=gcc -O2
 
 all: ldap2service
 
+debug: CCFLAGS += -DDEBUG -g
+debug: ldap2service
+
 ldap2service: ldap2service.c ldap2service
-	gcc -O2 ldap2service.c -lldap -llber -lconfig -o ldap2service
+	$(CCFLAGS) ldap2service.c -lldap -llber -lconfig -o ldap2service
 
 install: all
 	mkdir -p $(BIN_DIR)
