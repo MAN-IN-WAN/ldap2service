@@ -40,7 +40,8 @@ char *attrNames[100];
 char **attrValues[100];
 int attrCount = 0;
 // apache
-char *apFileContent, *apFileContentSsl, *apFileObject, *apFolder, *apRestart, *apCommand;
+char *apFileContent, *apFileContentSsl=NULL, *apFileObject, *apFolder, *apRestart, *apCommand;
+
 struct apReplace {
 	char *target;
 	char *value;
@@ -408,7 +409,7 @@ int classApache() {
 	system(command);
   }
 
-  if (sslactive) {
+  if (sslactive && apFileContentSsl!=NULL && strcmp(apFileContentSsl,"")) {
 	apUpdated = 1;
 	printf("creation config ssl %s\n",fileNameSsl);
 	  //creation du fichier ssl
