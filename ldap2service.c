@@ -245,7 +245,7 @@ int settingAccount() {
 	settingValue(configAccount, "folder", 's', &acFolder);
 	settingValue(configAccount, "fileName", 's', &acFileName);
 	settingValue(configAccount, "fileContent", 's', &acFileContent);
-	settingValue(configAccount, "restart", 's', &apRestart);
+	settingValue(configAccount, "restart", 's', &acRestart);
 	settingValue(configAccount, "command", 's', &acCommand);
 	settingValue(configAccount, "replacements", 'v', &replacements);
 	count = acReplaceCount = config_setting_length(replacements);
