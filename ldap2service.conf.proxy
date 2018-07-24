@@ -1,0 +1,116 @@
+// ldap settings
+ldap = {
+  host = "localhost";
+  port = 389;
+  bind = "cn=px1.azko.fr,dc=azko,dc=fr";
+  password = "21wyisey";
+  base = "dc=azko,dc=fr";
+  filter = "(&(objectClass=*)(modifytimestamp>=%sZ)(!(modifytimestamp=%sZ)))";
+};
+
+// classes
+classes = {
+  apache = {
+    objectClass = "apacheConfig";
+    folder = "/etc/nginx/conf.d/";
+    fileObject = "apacheServerName";
+    restart = "systemctl reload nginx";
+    fileContent =
+"upstream %SERVER_NAME% {\n"
+"  ip_hash;\n"
+"  %APACHE_PROXY%\n"
+"}\n"
+"server {\n"
+"  listen 80;\n"
+"  server_name %SERVER_NAME% %SERVER_ALIAS%;\n"
+"  client_max_body_size 2000M;\n"
+"  include /etc/nginx/fragments/letsencrypt.conf;\n"
+"  location / {\n"
+"    proxy_http_version 1.1;\n"
+"    proxy_pass       http://%SERVER_NAME%;\n"
+"    proxy_set_header Host            $host;\n"
+"    proxy_set_header X-Forwarded-For $remote_addr;\n"
+"    client_body_buffer_size 1000000k;\n"
+"  }\n"
+"}\n";
+ 
+    fileContentSsl =
+"upstream %SERVER_NAME%.ssl {\n"
+"  ip_hash;\n"
+"  %APACHE_PROXY%\n"
+"}\n"
+"server {\n"
+"  listen 443;\n"
+"  server_name %SERVER_NAME% %SERVER_ALIAS%;\n"
+"  ssl_certificate /etc/ldap2service/%SERVER_NAME%-fullchain.pem;\n"
+"  ssl_certificate_key /etc/ldap2service/%SERVER_NAME%-privkey.pem;\n"
+"  ssl on;\n"
+"  ssl_session_cache  builtin:1000  shared:SSL:10m;\n"
+"  ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;\n"
+"  ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;\n"
+"  ssl_prefer_server_ciphers on;\n"
+"  access_log /var/log/nginx/%SERVER_NAME%.ssl.access.log;\n"
+"  error_log /var/log/nginx/%SERVER_NAME%.ssl.error.log;\n"
+"  client_max_body_size 2000M;\n"
+"    proxy_http_version 1.1;\n"
+"    proxy_set_header Host $host;\n"
+"    proxy_set_header X-Forwarded-For $remote_addr;\n"
+"    proxy_set_header X-Forwarded-Host $host;\n"
+"    proxy_set_header X-Forwarded-Server $host;\n"
+"    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+"    proxy_set_header X-Forwarded-Proto https;\n"
+"    proxy_set_header X-Forwarded-Port 443;\n"
+"    proxy_set_header X-Real-IP $remote_addr;\n"
+"    client_body_buffer_size 1000000k;\n"
+"  location / {\n"
+"    proxy_pass http://%SERVER_NAME%.ssl;\n"
+"  }\n"
+"  location ~*\.(ico|css|js|gif|jpeg|jpg|png|woff|ttf|otf|svg|woff2|eot|webp)$ {\n"
+"    proxy_pass http://%SERVER_NAME%.ssl;\n"
+"    expires 365d;\n"
+"  }\n"
+"}\n";
+
+    	command = "";
+	replacements = (
+		{target = "%SERVER_NAME%"; value = "apacheServerName";  prefix = ""; separator = "";},
+		{target = "%DOCUMENT_ROOT%"; value = "apacheDocumentRoot";  prefix = ""; separator = "";},
+		{target = "%SERVER_ALIAS%"; value = "apacheServerAlias";  prefix = ""; separator = " ";},
+		{target = "%USER_NAME%"; value = "apacheSuexecUid";  prefix = "";  separator = "";},
+		{target = "%APACHE_OPTIONS%"; value = "apacheOptions";  prefix = "";  separator = "";},
+		{target = "%APACHE_PROXY%"; value = "apacheProxy";  prefix = "";  separator ="";},
+		{target = "%HTACCESS_USER%"; value = "apacheHtPasswordUser";  prefix = "";  separator = "";},
+		{target = "%HTACCESS_PASSWORD%"; value = "apacheHtPasswordPassword";  prefix = "";  separator = "";},
+		{target = "%GROUP_NAME%"; value = "apacheSuexecGid";  prefix = "";  separator = "";}
+	);
+  };
+  account = {
+    objectClass = "inetOrgPersonXXXX";
+    command = "su %UID% -c ls > /dev/null";
+    folder = "/home/%UID%/cgi-bin/";
+    fileName: "php.fcgid";
+    restart = "service httpd reload";
+    fileContent =
+"#!/bin/bash\n"
+"PHPRC=/etc/php-%LANGUAGE%/\n"
+"export PHPRC\n"
+"export PHP_FCGI_MAX_REQUESTS=1000\n"
+"export PHP_FCGI_CHILDREN=0\n"
+"exec /usr/local/php-%LANGUAGE%/bin/php-cgi\n";
+
+    replacements = (
+        {target = "%UID%"; value = "uid";  prefix = ""; separator = ""; defaultValue = "";},
+        {target = "%LANGUAGE%"; value = "preferredLanguage";  prefix = ""; separator = ""; defaultValue = "default";}
+    );
+  };
+
+  ftp = {
+    objectClass = "PureFTPdUserXXXX";
+  };
+
+  dns = {
+        objectClass = "dnszone";
+        restart = "/usr/local/bin/updatedns";
+  };
+};
+
