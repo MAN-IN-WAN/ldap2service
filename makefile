@@ -26,9 +26,7 @@ install: all
 	ln -s /etc/php.ini /etc/php-default/php.ini
 
 update:
-	install -m 755 ldap2service.conf $(CONFIG_DIR)
 	install -m 755 ldap2service $(BIN_DIR)
-	install -m 755 ldap2service.time $(CONFIG_DIR)
 	install -m 755 mod_vhost_ldap_ng.schema $(OPENLDAP_DIR)
 	install -m 755 pureftpd.schema $(OPENLDAP_DIR)
 	install -m 755 ldap2dns.schema $(OPENLDAP_DIR)

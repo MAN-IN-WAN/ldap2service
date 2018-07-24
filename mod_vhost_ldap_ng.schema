@@ -170,9 +170,9 @@ attributetype ( 1.3.6.1.4.1.8387.1.1.23 NAME 'apacheProxy'
         SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32768}
                 SINGLE-VALUE )
 
-attributetype ( 1.3.6.1.4.1.8387.1.1.24 NAME 'apacheAlias'
+attributetype ( 1.3.6.1.4.1.8387.1.1.24 NAME 'apacheConfigAlias'
         SUP name
-        DESC 'mod_vhost_ldap_ng: Apache alias configuration'
+        DESC 'mod_vhost_ldap_ng: Apache config alias configuration'
 	EQUALITY caseIgnoreMatch
         SUBSTR caseIgnoreSubstringsMatch
         SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{256} )
@@ -197,4 +197,5 @@ objectclass ( 1.3.6.1.4.1.8387.1.2.1 NAME 'apacheConfig'
                 phpOpenBasedir $ phpIncludePath $ apacheErrorLog $ 
 		apacheOptions $ apacheHtPasswordUser $ apacheHtPasswordPassword $ 
 		apacheCertificate $ apacheCertificateKey $ apacheSslEnabled $ 
-		apacheCertificateExpiration $ apacheHtPasswordEnabled $ apacheProxy ) )
+		apacheCertificateExpiration $ apacheHtPasswordEnabled $ apacheProxy $
+		apacheConfigAlias $ apacheProxyCacheConfig $ apacheProxyCacheConfigSsl ) )
