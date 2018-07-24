@@ -27,6 +27,7 @@ classes = {
 "  include /etc/nginx/fragments/letsencrypt.conf;\n"
 "  location / {\n"
 "    proxy_http_version 1.1;\n"
+"    %PROXY_CONFIG%\n"
 "    proxy_pass       http://%SERVER_NAME%;\n"
 "    proxy_set_header Host            $host;\n"
 "    proxy_set_header X-Forwarded-For $remote_addr;\n"
@@ -45,6 +46,7 @@ classes = {
 "  ssl_certificate /etc/ldap2service/%SERVER_NAME%-fullchain.pem;\n"
 "  ssl_certificate_key /etc/ldap2service/%SERVER_NAME%-privkey.pem;\n"
 "  ssl on;\n"
+"  
 "  ssl_session_cache  builtin:1000  shared:SSL:10m;\n"
 "  ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;\n"
 "  ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;\n"
@@ -53,6 +55,7 @@ classes = {
 "  error_log /var/log/nginx/%SERVER_NAME%.ssl.error.log;\n"
 "  client_max_body_size 2000M;\n"
 "    proxy_http_version 1.1;\n"
+"    %PROXY_CONFIG_SSL%\n"
 "    proxy_set_header Host $host;\n"
 "    proxy_set_header X-Forwarded-For $remote_addr;\n"
 "    proxy_set_header X-Forwarded-Host $host;\n"
@@ -79,6 +82,8 @@ classes = {
 		{target = "%USER_NAME%"; value = "apacheSuexecUid";  prefix = "";  separator = "";},
 		{target = "%APACHE_OPTIONS%"; value = "apacheOptions";  prefix = "";  separator = "";},
 		{target = "%APACHE_PROXY%"; value = "apacheProxy";  prefix = "";  separator ="";},
+		{target = "%PROXY_CONFIG%"; value = "apacheProxyCacheConfig";  prefix = "";  separator ="";},
+		{target = "%PROXY_CONFIG_SSL%"; value = "apacheProxyCacheConfigSsl";  prefix = "";  separator ="";},
 		{target = "%HTACCESS_USER%"; value = "apacheHtPasswordUser";  prefix = "";  separator = "";},
 		{target = "%HTACCESS_PASSWORD%"; value = "apacheHtPasswordPassword";  prefix = "";  separator = "";},
 		{target = "%GROUP_NAME%"; value = "apacheSuexecGid";  prefix = "";  separator = "";}
